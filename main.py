@@ -30,14 +30,25 @@ def main():
     clock = pygame.time.Clock()
     info = pygame.display.Info()
     screen_size = info.current_w, info.current_h
-    font = PangoFont(family='Helvetica', size=30, bold=True)
+    font = PangoFont(family='Helvetica', size=16, bold=True)
+    BLACK = (0, 0, 0)
     BLUE = (0, 0, 255)
-    WHITE = (255, 255, 255)
-    the_ball = Ball(font, WHITE, BLUE, Operation(1000, 3000, OPER_MUL))
-    the_ball.move((140, 170))
+    YELLOW = (255, 255, 0)
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
+    the_balls = [Ball(font, BLACK, BLUE, Operation(1000, 3000, OPER_MUL)),
+                 Ball(font, BLACK, YELLOW, Operation(120, 45, OPER_SUB)),
+                 Ball(font, BLACK, RED, Operation(9, 3, OPER_DIV)),
+                 Ball(font, BLACK, GREEN, Operation(120, 240, OPER_ADD))]
+    the_balls[0].move((140, 170))
+    the_balls[1].move((400, 300))
+    the_balls[2].move((200, 80))
+    the_balls[3].move((330, 70))
+
     while True:
         screen.fill(BACKGROUND)
-        paint_ball(the_ball, screen)
+        for ball in the_balls:
+            paint_ball(ball, screen)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == QUIT:
