@@ -7,7 +7,7 @@ Created on Sat Sep 14 10:57:17 2013
 
 import olpcgames
 import pygame
-import sys
+from sys import exit
 from olpcgames.pangofont import PangoFont
 from pygame.locals import QUIT
 from ball import *
@@ -28,33 +28,23 @@ def main():
         screen = pygame.display.set_mode(size)
         pygame.display.set_caption("Hit the balls")
     clock = pygame.time.Clock()
-    info = pygame.display.Info()
-    screen_size = info.current_w, info.current_h
     font = PangoFont(family='Helvetica', size=16, bold=True)
     BLACK = (0, 0, 0)
     BLUE = (0, 0, 255)
-    YELLOW = (255, 255, 0)
-    RED = (255, 0, 0)
-    GREEN = (0, 255, 0)
-    the_balls = [Ball(font, BLACK, BLUE, Operation(1000, 3000, OPER_MUL)),
-                 Ball(font, BLACK, YELLOW, Operation(120, 45, OPER_SUB)),
-                 Ball(font, BLACK, RED, Operation(9, 3, OPER_DIV)),
-                 Ball(font, BLACK, GREEN, Operation(120, 240, OPER_ADD))]
-    the_balls[0].move((140, 170))
-    the_balls[1].move((400, 300))
-    the_balls[2].move((200, 80))
-    the_balls[3].move((330, 70))
-
+    the_ball = Ball(font, BLACK, BLUE, Operation(1000, 3000, OPER_MUL),
+                    (2, 1.2))
+    the_ball.move_to((140, 170))
+    
     while True:
         screen.fill(BACKGROUND)
-        for ball in the_balls:
-            paint_ball(ball, screen)
-        pygame.display.update()
+        paint_ball(the_ball, screen)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
-                sys.exit()
+                exit()
+        pygame.display.update()
         clock.tick(FPS)
+        the_ball.move()
 
 if __name__ == "__main__":
     main()
