@@ -26,3 +26,23 @@ def paint_ball(ball, surface):
     txt_surface = ball.get_txt_font().render(
         ball.get_operation().get_text(), color=ball.get_txt_color())
     surface.blit(txt_surface, txt_position)
+    
+def paint_time_bar(time_bar, surface):
+    """
+    Draws a time bar onto the given PyGame surface.
+    time_bar : the time bar => TimeBar
+    surface : the destination surface => PyGame.Surface
+    """
+    edge = time_bar.get_edge()    
+    dead_rect = (edge[0], edge[1],
+                 time_bar.get_width(), time_bar.get_height())
+    pygame.draw.rect(surface, time_bar.get_dead_color(), dead_rect)
+    try:
+        value = time_bar.get_value()
+        max_value = time_bar.get_max_value()
+        active_rect = (edge[0], edge[1],
+                       int(time_bar.get_width() * value / max_value),
+                       time_bar.get_height())
+        pygame.draw.rect(surface, time_bar.get_active_color(), active_rect)
+    except NameError:
+        pygame.draw.rect(surface, time_bar.get_active_color(), dead_rect)

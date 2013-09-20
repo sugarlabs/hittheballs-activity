@@ -9,10 +9,11 @@ import olpcgames
 import pygame
 from sys import exit
 from olpcgames.pangofont import PangoFont
-from pygame.locals import QUIT
-from ball import *
-from operation import *
-from elements_painter import *
+from pygame.locals import QUIT, USEREVENT
+from ball import Ball
+from operation import Operation, OPER_ADD, OPER_SUB, OPER_MUL, OPER_DIV
+from elements_painter import paint_ball, paint_time_bar
+from time_bar import TimeBar
 import balls_collision
 
 
@@ -21,6 +22,7 @@ def main():
     pygame.init()
     FPS = 40
     BACKGROUND = (255, 255, 255)
+    TIME_BAR_HEIGHT = 20
     if olpcgames.ACTIVITY:
         size = olpcgames.ACTIVITY.game_size
         screen = pygame.display.set_mode(size)
@@ -35,6 +37,9 @@ def main():
     YELLOW = (255, 255, 0)
     RED = (255, 0, 0)
     GREEN = (0, 255, 0)
+    DARK_GREEN = (0, 100, 0)
+    GRAY = (200, 200, 200)
+    
     the_balls = [Ball(font, BLACK, BLUE, 
                       Operation(1000, 3000, OPER_MUL), (2, 1.2)),
                  Ball(font, BLACK, YELLOW, 
@@ -50,14 +55,20 @@ def main():
     the_balls[2].move_to((200, 80))
     the_balls[3].move_to((330, 70))
     
+    time_bar = TimeBar(size[0], TIME_BAR_HEIGHT, DARK_GREEN, GRAY)
+    time_bar.start(1000, 10)
+    
     while True:
         screen.fill(BACKGROUND)
+        paint_time_bar(time_bar, screen)
         for ball in the_balls:
             paint_ball(ball, screen)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 exit()
+            elif event.type == USEREVENT + 1:
+                time_bar.decrease()
         pygame.display.update()
         clock.tick(FPS)
         for ball in the_balls:
