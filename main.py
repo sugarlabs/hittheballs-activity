@@ -13,6 +13,7 @@ from pygame.locals import QUIT
 from ball import *
 from operation import *
 from elements_painter import *
+import balls_collision
 
 
 def main():
@@ -31,20 +32,37 @@ def main():
     font = PangoFont(family='Helvetica', size=16, bold=True)
     BLACK = (0, 0, 0)
     BLUE = (0, 0, 255)
-    the_ball = Ball(font, BLACK, BLUE, Operation(1000, 3000, OPER_MUL),
-                    (2, 1.2))
-    the_ball.move_to((140, 170))
+    YELLOW = (255, 255, 0)
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
+    the_balls = [Ball(font, BLACK, BLUE, 
+                      Operation(1000, 3000, OPER_MUL), (2, 1.2)),
+                 Ball(font, BLACK, YELLOW, 
+                      Operation(120, 45, OPER_SUB), (1.6,-0.4)),
+                 Ball(font, BLACK, RED, 
+                      Operation(9, 3, OPER_DIV), (-0.8, 1.6)),
+                 Ball(font, BLACK, GREEN,
+                      Operation(120, 240, OPER_ADD), (1.7, -1.2))]
+                
+
+    the_balls[0].move_to((140, 170))
+    the_balls[1].move_to((400, 300))
+    the_balls[2].move_to((200, 80))
+    the_balls[3].move_to((330, 70))
     
     while True:
         screen.fill(BACKGROUND)
-        paint_ball(the_ball, screen)
+        for ball in the_balls:
+            paint_ball(ball, screen)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 exit()
         pygame.display.update()
         clock.tick(FPS)
-        the_ball.move()
+        for ball in the_balls:
+            ball.move()
+        balls_collision.manage_colliding_balls(the_balls)
 
 if __name__ == "__main__":
     main()

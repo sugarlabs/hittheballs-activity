@@ -22,7 +22,8 @@ class Ball(object):
         velocity : current direction of move => A tuple of 2 floats (x,y)
         """
         info = pygame.display.Info()
-        self._SCREEN_WIDTH, self._SCREEN_HEIGTH = info.current_w, info.current_h        
+        self._SCREEN_WIDTH = info.current_w
+        self._SCREEN_HEIGHT = info.current_h        
         self._txt_font = txt_font
         self._txt_color = txt_color
         self._bg_color = bg_color
@@ -102,7 +103,15 @@ class Ball(object):
             self._center = (self._center[0] + self._velocity[0],
                             self._center[1] + self._velocity[1])
         elif (self._center[1] < radius
-             or self._center[1] > self._SCREEN_HEIGTH - radius):
+             or self._center[1] > self._SCREEN_HEIGHT - radius):
             self._velocity = (self._velocity[0], -self._velocity[1])
             self._center = (self._center[0] + self._velocity[0],
                             self._center[1] + self._velocity[1])
+                            
+    def oppose_velocity_and_move(self):
+        """
+        Alters the velocity, by multiplying each of its values
+        by -1, then move it from one step (calling move).
+        """
+        self._velocity = (self._velocity[0] * -1,
+                          self._velocity[1] * -1)
