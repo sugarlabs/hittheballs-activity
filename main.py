@@ -56,7 +56,7 @@ def main():
     the_balls[3].move_to((330, 70))
     
     time_bar = TimeBar(size[0], TIME_BAR_HEIGHT, DARK_GREEN, GRAY)
-    time_bar.start(1000, 10)
+    time_bar.start(1000, 1)
     
     while True:
         screen.fill(BACKGROUND)

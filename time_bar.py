@@ -33,8 +33,9 @@ class TimeBar(object):
     def start(self, max_value, step):
         """
         Starts a new 'session'. Please, notice that time between two stages
-        (or ticks) is 100 milliseconds, and that you must call decrease()
-        method on USEREVENT+1 event of pygame.
+        (or ticks) is 10 milliseconds (so it will take max_value * step * 10
+        milleseconds for the bar to be empty), and that you must call
+        decrease() method on USEREVENT+1 event of pygame.
         max_value : the start value (don't forget that it is a reversed
         progress bar) => integer
         step : how many units will be removed at each stage => integer
@@ -42,7 +43,7 @@ class TimeBar(object):
         self._value = max_value
         self._max_value = max_value
         self._step = step
-        pygame.time.set_timer(USEREVENT + 1, 100)
+        pygame.time.set_timer(USEREVENT + 1, 10)
 
     def decrease(self):
         """
