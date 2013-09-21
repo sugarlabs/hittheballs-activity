@@ -9,13 +9,15 @@ Created on Fri Sep 20 23:19:47 2013
 import pygame
 from pygame.locals import USEREVENT
 
+
 class TimeBar(object):
+
     """
     A kind of reversed progress bar.
     """
-    
-    def __init__(self, width, height, active_color, dead_color, 
-                 lftp_edge=(0,0)):
+
+    def __init__(self, width, height, active_color, dead_color,
+                 lftp_edge=(0, 0)):
         """
         Constructor
         width : width of the bar (when it has its maximum value) => integer
@@ -30,7 +32,7 @@ class TimeBar(object):
         self._active_color = active_color
         self._dead_color = dead_color
         self._is_empty = False
-        
+
     def start(self, max_value, step):
         """
         Starts a new 'session'. Please, notice that time between two stages
@@ -56,42 +58,42 @@ class TimeBar(object):
         if self._value <= 0:
             self._is_empty = True
             pygame.time.set_timer(USEREVENT + 1, 0)
-    
+
     def get_width(self):
         """
         Accessor to the width (width when it has its maximum value)
         => integer
         """
         return self._width
-        
+
     def get_height(self):
         """
         Accessor to the height
         => integer
         """
         return self._height
-        
+
     def get_edge(self):
         """
         Accessor to the left-top edge.
         => tuple of two integers
         """
         return self._lftp_edge
-        
+
     def get_active_color(self):
         """
         Accessor to the active part (not elapsed) color.
         => Tuple of 3 integers.
         """
         return self._active_color
-        
+
     def get_dead_color(self):
         """
         Accessor to the dead part (elapsed) color.
         => Tuple of 3 integers
         """
         return self._dead_color
-        
+
     def get_value(self):
         """
         Accessor to the value.
@@ -102,7 +104,7 @@ class TimeBar(object):
             return self._value
         except AttributeError:
             raise NameError
-        
+
     def get_max_value(self):
         """
         Accessor to the max value.
@@ -113,7 +115,7 @@ class TimeBar(object):
             return self._max_value
         except AttributeError:
             raise NameError
-            
+
     def is_empty(self):
         """
         Says whether the bar is empty.

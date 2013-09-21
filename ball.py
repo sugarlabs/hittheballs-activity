@@ -5,6 +5,9 @@ Created on Sat Sep 14 10:57:17 2013
 @author: laurent-bernabe
 """
 
+from math import sqrt
+
+
 class Ball(object):
 
     """
@@ -13,7 +16,7 @@ class Ball(object):
     """
 
     def __init__(self, txt_font, txt_color, bg_color, operation,
-                 move_area, velocity = (0,0)):
+                 move_area, velocity=(0, 0)):
         """
         Constructor
         txt_font : text font => olpcgames.pangofont
@@ -32,6 +35,7 @@ class Ball(object):
         self._center = (0, 0)
         self._velocity = velocity
         self._move_area = move_area
+        self._visible = True
         txt_size = txt_font.size(operation.get_text())
         if txt_size[0] > txt_size[1]:
             max_txt_size = txt_size[0]
@@ -104,20 +108,20 @@ class Ball(object):
         expected_new_center = (self._center[0] + self._velocity[0],
                                self._center[1] + self._velocity[1])
         self._center = expected_new_center
-        radius = self._diameter / 2 
-        # Ball must not go across left or right wall.                
-        if (self._center[0] < self._move_area[0] + radius 
+        radius = self._diameter / 2
+        # Ball must not go across left or right wall.
+        if (self._center[0] < self._move_area[0] + radius
            or self._center[0] > self._move_area[2] - radius):
             self._velocity = (-self._velocity[0], self._velocity[1])
             self._center = (self._center[0] + self._velocity[0],
                             self._center[1] + self._velocity[1])
         # Ball must not go across top or bottom wall.
         elif (self._center[1] < self._move_area[1] + radius
-             or self._center[1] > self._move_area[3] - radius):
+              or self._center[1] > self._move_area[3] - radius):
             self._velocity = (self._velocity[0], -self._velocity[1])
             self._center = (self._center[0] + self._velocity[0],
                             self._center[1] + self._velocity[1])
-                            
+
     def oppose_velocity_and_move(self):
         """
         Alters the velocity, by multiplying each of its values
@@ -125,3 +129,34 @@ class Ball(object):
         """
         self._velocity = (self._velocity[0] * -1,
                           self._velocity[1] * -1)
+
+    def contains(self, point):
+        """
+        Tells whether the given point is inside the ball.
+        point : the point to test => tuple of 2 integers
+        => Boolean
+        """
+        vector_to_center = (point[0] - self._center[0],
+                            point[1] - self._center[1])
+        dist_to_center = sqrt(vector_to_center[0] * vector_to_center[0]
+                              + vector_to_center[1] * vector_to_center[1])
+        return dist_to_center <= self._diameter / 2
+
+    def is_visible(self):
+        """
+        Tells whether this ball is visible.
+        => Boolean
+        """
+        return self._visible
+
+    def show(self):
+        """
+        Makes the ball visible.
+        """
+        self._visible = True
+
+    def hide(self):
+        """
+        Makes the ball hidden.
+        """
+        self._visible = False
