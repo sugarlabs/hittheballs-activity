@@ -8,6 +8,7 @@ Created on Sun Sep 15 01:28:19 2013
 """
 
 import pygame
+from olpcgames.pangofont import PangoFont
 
 
 def paint_ball(ball, surface):
@@ -69,3 +70,29 @@ def paint_result_bar(result_bar, surface):
     surface.blit(text_surface,
                  (edge[0] + result_bar.get_insets(),
                   edge[1] + result_bar.get_insets()))
+
+
+def paint_results(game_area, balls_list, surface):
+    """
+    Draws all results, with their ball color as "header".
+    game_area : area of the balls => tuple of 4 integer
+    balls_list : list of balls => list of Ball
+    surface : the destination surface => PyGame.Surface
+    """
+    font = PangoFont(family='Helvetica', size=16)
+    LINE_HEIGHT = font.size("0123456789")[1]
+    CIRCLES_RADIUS = LINE_HEIGHT / 2
+    ball_index = 0
+    BLACK = (0, 0, 0)
+    for ball in balls_list:
+        pygame.draw.circle(surface, ball.get_bg_color(),
+                          (game_area[0] + CIRCLES_RADIUS,
+                           game_area[
+                               1] + ball_index * LINE_HEIGHT + CIRCLES_RADIUS),
+                           CIRCLES_RADIUS)
+        txt = ball.get_operation().get_text() + " = " + str(ball.get_operation().
+                                                            get_result())
+        txt_surface = font.render(txt, color=BLACK)
+        surface.blit(txt_surface,
+                     (game_area[0] + 40, game_area[1] + ball_index * LINE_HEIGHT))
+        ball_index += 1

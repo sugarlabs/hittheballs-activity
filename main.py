@@ -12,7 +12,8 @@ from olpcgames.pangofont import PangoFont
 from pygame.locals import QUIT, USEREVENT, MOUSEBUTTONUP
 from ball import Ball
 from operation import Operation, OPER_ADD, OPER_SUB, OPER_MUL, OPER_DIV
-from elements_painter import paint_ball, paint_time_bar, paint_result_bar
+from elements_painter import paint_ball, paint_time_bar, paint_result_bar,\
+    paint_results
 from time_bar import TimeBar
 from result_bar import ResultBar
 from game_state import GameState
@@ -118,9 +119,9 @@ def main():
         screen.fill(BACKGROUND)
         paint_result_bar(result_bar, screen)
         paint_time_bar(time_bar, screen)
-        for ball in the_balls:
-            paint_ball(ball, screen)
         if game_state == GameState.NORMAL:
+            for ball in the_balls:
+                paint_ball(ball, screen)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
@@ -139,28 +140,33 @@ def main():
                                 if all_target_balls_destroyed(
                                         target_result, the_balls):
                                     game_state = GameState.WON
+                                    show_status = True
+                                    pygame.time.set_timer(USEREVENT + 2, 800)
                             else:
                                 game_state = GameState.LOST
+                                show_status = True
+                                pygame.time.set_timer(USEREVENT + 2, 800)
             clock.tick(FPS)
             for ball in the_balls:
                 ball.move()
             balls_collision.manage_colliding_balls(the_balls)
         else:
-            if game_state == GameState.WON:
-                end_txt = "Success !"
-            else:
-                end_txt = "Failure !"
-            end_txt_surface = end_font.render(end_txt,
-                                              color=BLUE, background=RED)
-            screen.blit(end_txt_surface, END_TXT_POS)
+            paint_results(balls_area, the_balls, screen)
+            # Blinks the status text.
+            if show_status:
+                if game_state == GameState.WON:
+                    end_txt = "Success !"
+                else:
+                    end_txt = "Failure !"
+                end_txt_surface = end_font.render(end_txt,
+                                                  color=BLUE, background=RED)
+                screen.blit(end_txt_surface, END_TXT_POS)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
                     exit()
-                elif event.type == MOUSEBUTTONUP:
-                    if event.button == LEFT_BUTTON:
-                        pygame.quit()
-                        exit()
+                elif event.type == USEREVENT + 2:
+                    show_status = not show_status
 
 if __name__ == "__main__":
     main()
