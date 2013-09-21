@@ -15,6 +15,7 @@ from operation import Operation, OPER_ADD, OPER_SUB, OPER_MUL, OPER_DIV
 from elements_painter import paint_ball, paint_time_bar, paint_result_bar
 from time_bar import TimeBar
 from result_bar import ResultBar
+from game_state import GameState
 import balls_collision
 
 
@@ -36,6 +37,21 @@ def get_result_at_pos(point, balls_list):
     return None
 
 
+def all_target_balls_destroyed(target_result, balls_list):
+    """
+    Says whether all target ball, those with the expected result, have been
+    removed from the given list.
+    target_result : expected result => integer
+    balls_list : list of balls => list of Ball
+    => Boolean
+    """
+    for ball in balls_list:
+        if ball.is_visible() \
+                and ball.get_operation().get_result() == target_result:
+            return False
+    return True
+
+
 def main():
     """ The main routine """
     pygame.init()
@@ -51,6 +67,7 @@ def main():
     DARK_GREEN = (0, 100, 0)
     GRAY = (200, 200, 200)
     BROWN = (160, 100, 0)
+
     if olpcgames.ACTIVITY:
         size = olpcgames.ACTIVITY.game_size
         screen = pygame.display.set_mode(size)
@@ -60,7 +77,10 @@ def main():
         pygame.display.set_caption("Hit the balls")
     clock = pygame.time.Clock()
     font = PangoFont(family='Helvetica', size=16, bold=True)
+    end_font = PangoFont(family='Helvetica', size=30, bold=True)
+    END_TXT_POS = (int(size[0] / 4)), int(size[1] / 2.6)
 
+    game_state = GameState.NORMAL
     target_result = 360
 
     result_bar = ResultBar(font, txt_color=YELLOW, bg_color=RED,
@@ -94,31 +114,53 @@ def main():
     balls_collision.place_balls(the_balls, balls_area)
 
     while True:
+        pygame.display.update()
         screen.fill(BACKGROUND)
         paint_result_bar(result_bar, screen)
         paint_time_bar(time_bar, screen)
         for ball in the_balls:
             paint_ball(ball, screen)
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                exit()
-            elif event.type == USEREVENT + 1:
-                time_bar.decrease()
-                if time_bar.is_empty():
-                    result_bar.remove_result()
-            elif event.type == MOUSEBUTTONUP:
-                if event.button == LEFT_BUTTON:
-                    event_pos = event.pos
-                    clicked_ball = get_result_at_pos(event_pos, the_balls)
-                    if clicked_ball is not None:
-                        if clicked_ball["result"] == target_result:
-                            the_balls[clicked_ball["index"]].hide()
-        pygame.display.update()
-        clock.tick(FPS)
-        for ball in the_balls:
-            ball.move()
-        balls_collision.manage_colliding_balls(the_balls)
+        if game_state == GameState.NORMAL:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    exit()
+                elif event.type == USEREVENT + 1:
+                    time_bar.decrease()
+                    if time_bar.is_empty():
+                        result_bar.remove_result()
+                elif event.type == MOUSEBUTTONUP:
+                    if event.button == LEFT_BUTTON:
+                        event_pos = event.pos
+                        clicked_ball = get_result_at_pos(event_pos, the_balls)
+                        if clicked_ball is not None:
+                            if clicked_ball["result"] == target_result:
+                                the_balls[clicked_ball["index"]].hide()
+                                if all_target_balls_destroyed(
+                                        target_result, the_balls):
+                                    game_state = GameState.WON
+                            else:
+                                game_state = GameState.LOST
+            clock.tick(FPS)
+            for ball in the_balls:
+                ball.move()
+            balls_collision.manage_colliding_balls(the_balls)
+        else:
+            if game_state == GameState.WON:
+                end_txt = "Success !"
+            else:
+                end_txt = "Failure !"
+            end_txt_surface = end_font.render(end_txt,
+                                              color=BLUE, background=RED)
+            screen.blit(end_txt_surface, END_TXT_POS)
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    exit()
+                elif event.type == MOUSEBUTTONUP:
+                    if event.button == LEFT_BUTTON:
+                        pygame.quit()
+                        exit()
 
 if __name__ == "__main__":
     main()
