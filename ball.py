@@ -8,7 +8,8 @@ Created on Sat Sep 14 10:57:17 2013
 class Ball(object):
 
     """
-    An abstractation of a ball.
+    An abstractation of a ball. Its size is automatically adjusted with
+    its given operation text.
     """
 
     def __init__(self, txt_font, txt_color, bg_color, operation,

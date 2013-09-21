@@ -29,6 +29,7 @@ class TimeBar(object):
         self._lftp_edge = lftp_edge
         self._active_color = active_color
         self._dead_color = dead_color
+        self._is_empty = False
         
     def start(self, max_value, step):
         """
@@ -43,6 +44,7 @@ class TimeBar(object):
         self._value = max_value
         self._max_value = max_value
         self._step = step
+        self._is_empty = False
         pygame.time.set_timer(USEREVENT + 1, 10)
 
     def decrease(self):
@@ -52,6 +54,7 @@ class TimeBar(object):
         """
         self._value -= self._step
         if self._value <= 0:
+            self._is_empty = True
             pygame.time.set_timer(USEREVENT + 1, 0)
     
     def get_width(self):
@@ -110,3 +113,10 @@ class TimeBar(object):
             return self._max_value
         except AttributeError:
             raise NameError
+            
+    def is_empty(self):
+        """
+        Says whether the bar is empty.
+        => boolean
+        """
+        return self._is_empty

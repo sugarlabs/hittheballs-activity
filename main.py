@@ -12,8 +12,9 @@ from olpcgames.pangofont import PangoFont
 from pygame.locals import QUIT, USEREVENT
 from ball import Ball
 from operation import Operation, OPER_ADD, OPER_SUB, OPER_MUL, OPER_DIV
-from elements_painter import paint_ball, paint_time_bar
+from elements_painter import paint_ball, paint_time_bar, paint_result_bar
 from time_bar import TimeBar
+from result_bar import ResultBar
 import balls_collision
 
 
@@ -22,7 +23,7 @@ def main():
     pygame.init()
     FPS = 40
     BACKGROUND = (255, 255, 255)
-    TIME_BAR_HEIGHT = 20
+    TIME_BAR_HEIGHT = 20   
     BLACK = (0, 0, 0)
     BLUE = (0, 0, 255)
     YELLOW = (255, 255, 0)
@@ -39,26 +40,39 @@ def main():
         pygame.display.set_caption("Hit the balls")
     clock = pygame.time.Clock()
     font = PangoFont(family='Helvetica', size=16, bold=True)
+
+    result_bar = ResultBar(font, txt_color = YELLOW, bg_color = RED,
+                           header = "Hit the balls with result : ",
+                           width = size[0])
+    RESULT_BAR_HEIGHT = result_bar.get_height()
+    result_bar.set_result(360)
     
-    time_bar = TimeBar(size[0], TIME_BAR_HEIGHT, DARK_GREEN, GRAY)
+    time_bar = TimeBar(size[0], TIME_BAR_HEIGHT, DARK_GREEN, GRAY,
+                       lftp_edge = (0, RESULT_BAR_HEIGHT))
     time_bar.start(1000, 1)
+        
     
-    balls_area = (0, TIME_BAR_HEIGHT, size[0], size[1])
+    balls_area = (0, TIME_BAR_HEIGHT + RESULT_BAR_HEIGHT, size[0], size[1])
     
-    the_balls = [Ball(font, BLACK, BLUE, 
-                      Operation(1000, 3000, OPER_MUL), balls_area, (2, 1.2)),
-                 Ball(font, BLACK, YELLOW, 
-                      Operation(120, 45, OPER_SUB), balls_area, (1.6,-0.4)),
-                 Ball(font, BLACK, RED, 
-                      Operation(9, 3, OPER_DIV), balls_area, (-0.8, 1.6)),
-                 Ball(font, BLACK, GREEN,
-                      Operation(120, 240, OPER_ADD), balls_area, (1.7, -1.2))]
+    the_balls = [Ball(font, txt_color = BLACK, bg_color = BLUE, 
+                      operation = Operation(1000, 3000, OPER_MUL),
+                      move_area = balls_area, velocity = (2, 1.2)),
+                 Ball(font, txt_color = BLACK, bg_color = YELLOW, 
+                      operation = Operation(120, 45, OPER_SUB),
+                      move_area = balls_area, velocity = (1.6,-0.4)),
+                 Ball(font, txt_color = BLACK, bg_color = RED, 
+                      operation = Operation(9, 3, OPER_DIV), 
+                      move_area = balls_area, velocity = (-0.8, 1.6)),
+                 Ball(font, txt_color = BLACK, bg_color = GREEN,
+                      operation = Operation(120, 240, OPER_ADD),
+                      move_area = balls_area, velocity = (1.7, -1.2))]
                 
 
     balls_collision.place_balls(the_balls, balls_area)
     
     while True:
         screen.fill(BACKGROUND)
+        paint_result_bar(result_bar, screen)
         paint_time_bar(time_bar, screen)
         for ball in the_balls:
             paint_ball(ball, screen)
@@ -68,6 +82,8 @@ def main():
                 exit()
             elif event.type == USEREVENT + 1:
                 time_bar.decrease()
+                if time_bar.is_empty():
+                    result_bar.remove_result()
         pygame.display.update()
         clock.tick(FPS)
         for ball in the_balls:

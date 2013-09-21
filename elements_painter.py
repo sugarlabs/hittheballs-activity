@@ -46,3 +46,23 @@ def paint_time_bar(time_bar, surface):
         pygame.draw.rect(surface, time_bar.get_active_color(), active_rect)
     except NameError:
         pygame.draw.rect(surface, time_bar.get_active_color(), dead_rect)
+        
+def paint_result_bar(result_bar, surface):
+    """
+    Draws a result bar onto a given PyGame surface.
+    result_bar : the result bar => ResultBar
+    surface : the destination surface => PyGame.Surface
+    """
+    edge = result_bar.get_edge()
+    rect = (edge[0], edge[1],
+            result_bar.get_width(), result_bar.get_height())
+    pygame.draw.rect(surface, result_bar.get_background(), rect)
+    try:
+        text = result_bar.get_header() + str(result_bar.get_result())
+    except NameError:
+        text = result_bar.get_header()
+    text_surface = result_bar.get_text_font(). \
+        render(text, color = result_bar.get_foreground())
+    surface.blit(text_surface, 
+                 (edge[0] + result_bar.get_insets(),
+                  edge[1] + result_bar.get_insets()))
