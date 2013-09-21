@@ -7,6 +7,7 @@ Created on Fri Sep 20 19:57:22 2013
 """
 
 from math import sqrt
+from random import randint
 
 def are_colliding_balls(ball_1, ball_2):
     """
@@ -39,3 +40,25 @@ def manage_colliding_balls(balls_list):
             if (are_colliding_balls(fst_ball, snd_ball)):
                 fst_ball.oppose_velocity_and_move()
                 snd_ball.oppose_velocity_and_move()
+                
+def place_balls(balls_list, balls_area):
+    """
+    Places all the balls of balls_list, randomly, within balls_area
+    but assuring that balls don't collide each other.
+    balls_list : list of balls => List of Ball
+    balls_area :  space where ball is allowed to be => Tuple of 4 integers (
+        left side x, top side y, right side x, bottom side y)
+    """
+    placed_balls = []
+    for ball in balls_list:
+        while True:
+            ball_x = randint(balls_area[0], balls_area[2] + 1)
+            ball_y = randint(balls_area[1], balls_area[3] + 1)
+            ball.move_to((ball_x, ball_y))
+            collides = False
+            for placed_ball in placed_balls:
+                curr_collision_state = are_colliding_balls(ball, placed_ball)
+                collides = collides or curr_collision_state
+            if not collides:
+                placed_balls.append(ball)                
+                break

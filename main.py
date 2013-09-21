@@ -55,10 +55,7 @@ def main():
                       Operation(120, 240, OPER_ADD), balls_area, (1.7, -1.2))]
                 
 
-    the_balls[0].move_to((430, 200))
-    the_balls[1].move_to((400, 360))
-    the_balls[2].move_to((200, 80))
-    the_balls[3].move_to((330, 100))
+    balls_collision.place_balls(the_balls, balls_area)
     
     while True:
         screen.fill(BACKGROUND)
