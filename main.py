@@ -113,6 +113,8 @@ def main():
                       move_area = balls_area, velocity = (1.7, -1.2))]
 
     balls_collision.place_balls(the_balls, balls_area)
+    show_status = True
+    pygame.time.set_timer(USEREVENT + 2, 800)
 
     while True:
         pygame.display.update()
@@ -129,7 +131,7 @@ def main():
                 elif event.type == USEREVENT + 1:
                     time_bar.decrease()
                     if time_bar.is_empty():
-                        result_bar.remove_result()
+                        game_state = GameState.LOST
                 elif event.type == MOUSEBUTTONUP:
                     if event.button == LEFT_BUTTON:
                         event_pos = event.pos
@@ -140,12 +142,8 @@ def main():
                                 if all_target_balls_destroyed(
                                         target_result, the_balls):
                                     game_state = GameState.WON
-                                    show_status = True
-                                    pygame.time.set_timer(USEREVENT + 2, 800)
                             else:
                                 game_state = GameState.LOST
-                                show_status = True
-                                pygame.time.set_timer(USEREVENT + 2, 800)
             clock.tick(FPS)
             for ball in the_balls:
                 ball.move()
