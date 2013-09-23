@@ -7,16 +7,17 @@ Created on Sat Sep 14 10:57:17 2013
 
 import olpcgames
 import pygame
+from random import randint
 from sys import exit
 from olpcgames.pangofont import PangoFont
 from pygame.locals import QUIT, USEREVENT, MOUSEBUTTONUP
-from ball import Ball
-from operation import Operation, OPER_ADD, OPER_SUB, OPER_MUL, OPER_DIV
+from operation import OPER_ADD, OPER_SUB, OPER_MUL, OPER_DIV
 from elements_painter import paint_ball, paint_time_bar, paint_result_bar,\
     paint_results
 from time_bar import TimeBar
 from result_bar import ResultBar
 from game_state import GameState
+from balls_generator import BallsGenerator, OperationConfig
 import balls_collision
 
 
@@ -64,10 +65,8 @@ def main():
     BLUE = (0, 0, 255)
     YELLOW = (255, 255, 0)
     RED = (255, 0, 0)
-    GREEN = (0, 255, 0)
     DARK_GREEN = (0, 100, 0)
     GRAY = (200, 200, 200)
-    BROWN = (160, 100, 0)
 
     if olpcgames.ACTIVITY:
         size = olpcgames.ACTIVITY.game_size
@@ -82,35 +81,28 @@ def main():
     END_TXT_POS = (int(size[0] / 4)), int(size[1] / 2.6)
 
     game_state = GameState.NORMAL
-    target_result = 360
 
     result_bar = ResultBar(font, txt_color=YELLOW, bg_color=RED,
                            header="Hit the balls with result : ",
                            width=size[0])
     RESULT_BAR_HEIGHT = result_bar.get_height()
-    result_bar.set_result(target_result)
 
     time_bar = TimeBar(size[0], TIME_BAR_HEIGHT, DARK_GREEN, GRAY,
                        lftp_edge=(0, RESULT_BAR_HEIGHT))
-    time_bar.start(1000, 1)
+    time_bar.start(6000, 1)
 
     balls_area = (0, TIME_BAR_HEIGHT + RESULT_BAR_HEIGHT, size[0], size[1])
 
-    the_balls = [Ball(font, txt_color=BLACK, bg_color=BLUE,
-                      operation=Operation(1000, 3000, OPER_MUL),
-                      move_area=balls_area, velocity=(2, 1.2)),
-                 Ball(font, txt_color = BLACK, bg_color = YELLOW,
-                      operation = Operation(120, 45, OPER_SUB),
-                      move_area = balls_area, velocity = (1.6, -0.4)),
-                 Ball(font, txt_color = BLACK, bg_color = BROWN,
-                      operation = Operation(3, 120, OPER_MUL),
-                      move_area = balls_area, velocity = (0.7, -1.8)),
-                 Ball(font, txt_color = BLACK, bg_color = RED,
-                      operation = Operation(9, 3, OPER_DIV),
-                      move_area = balls_area, velocity = (-0.8, 1.6)),
-                 Ball(font, txt_color = BLACK, bg_color = GREEN,
-                      operation = Operation(120, 240, OPER_ADD),
-                      move_area = balls_area, velocity = (1.7, -1.2))]
+    operations_config = [OperationConfig(OPER_ADD, 2, 2),
+                         OperationConfig(OPER_MUL, 2, 1),
+                         OperationConfig(OPER_SUB, 2, 2),
+                         OperationConfig(OPER_DIV, 2, 2)]
+    the_balls = BallsGenerator().generate_list(5, operations_config,
+                                               balls_area, font, BLACK)
+
+    result_index = randint(1, len(the_balls)) - 1
+    target_result = the_balls[result_index].get_operation().get_result()
+    result_bar.set_result(target_result)
 
     balls_collision.place_balls(the_balls, balls_area)
     show_status = True
