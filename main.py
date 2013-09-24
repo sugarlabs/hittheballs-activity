@@ -1,162 +1,19 @@
 # -*- coding: utf-8 -*-
 """
+Entry point of the application.
 Created on Sat Sep 14 10:57:17 2013
 
 @author: laurent-bernabe
 """
 
-import olpcgames
-import pygame
-from random import randint
-from sys import exit
-from olpcgames.pangofont import PangoFont
-from pygame.locals import QUIT, USEREVENT, MOUSEBUTTONUP
 from operation import OPER_ADD, OPER_SUB, OPER_MUL, OPER_DIV
-from elements_painter import paint_ball, paint_time_bar, paint_result_bar,\
-    paint_results
-from time_bar import TimeBar
-from result_bar import ResultBar
-from game_state import GameState
-from balls_generator import BallsGenerator, OperationConfig
-import balls_collision
+from balls_generator import OperationConfig
+from main_game import play_game
 
-
-def get_result_at_pos(point, balls_list):
-    """
-    Returns the result of the ball located at point (from the balls_list)
-    and its index in the balls_list,
-    if any, else returns None.
-    point : point to test => tuple of 2 integers
-    balls_list : list of balls to test => list of Ball
-    => dictionnary with "result" key => value : integer
-                         "index" key => value : integer
-    """
-    for ball_index in range(len(balls_list)):
-        ball = balls_list[ball_index]
-        if ball.contains(point):
-            return {"result": ball.get_operation().get_result(),
-                    "index": ball_index}
-    return None
-
-
-def all_target_balls_destroyed(target_result, balls_list):
-    """
-    Says whether all target ball, those with the expected result, have been
-    removed from the given list.
-    target_result : expected result => integer
-    balls_list : list of balls => list of Ball
-    => Boolean
-    """
-    for ball in balls_list:
-        if ball.is_visible() \
-                and ball.get_operation().get_result() == target_result:
-            return False
-    return True
-
-
-def main():
-    """ The main routine """
-    pygame.init()
-    LEFT_BUTTON = 1
-    FPS = 40
-    BACKGROUND = (255, 255, 255)
-    TIME_BAR_HEIGHT = 20
-    BLACK = (0, 0, 0)
-    BLUE = (0, 0, 255)
-    YELLOW = (255, 255, 0)
-    RED = (255, 0, 0)
-    DARK_GREEN = (0, 100, 0)
-    GRAY = (200, 200, 200)
-
-    if olpcgames.ACTIVITY:
-        size = olpcgames.ACTIVITY.game_size
-        screen = pygame.display.set_mode(size)
-    else:
-        size = (600, 400)
-        screen = pygame.display.set_mode(size)
-        pygame.display.set_caption("Hit the balls")
-    clock = pygame.time.Clock()
-    font = PangoFont(family='Helvetica', size=16, bold=True)
-    end_font = PangoFont(family='Helvetica', size=30, bold=True)
-    END_TXT_POS = (int(size[0] / 4)), int(size[1] / 2.6)
-
-    game_state = GameState.NORMAL
-
-    result_bar = ResultBar(font, txt_color=YELLOW, bg_color=RED,
-                           header="Hit the balls with result : ",
-                           width=size[0])
-    RESULT_BAR_HEIGHT = result_bar.get_height()
-
-    time_bar = TimeBar(size[0], TIME_BAR_HEIGHT, DARK_GREEN, GRAY,
-                       lftp_edge=(0, RESULT_BAR_HEIGHT))
-    time_bar.start(6000, 1)
-
-    balls_area = (0, TIME_BAR_HEIGHT + RESULT_BAR_HEIGHT, size[0], size[1])
-
+if __name__ == "__main__":
     operations_config = [OperationConfig(OPER_ADD, 2, 2),
                          OperationConfig(OPER_MUL, 2, 1),
                          OperationConfig(OPER_SUB, 2, 2),
                          OperationConfig(OPER_DIV, 2, 2)]
-    the_balls = BallsGenerator().generate_list(5, operations_config,
-                                               balls_area, font, BLACK)
 
-    result_index = randint(1, len(the_balls)) - 1
-    target_result = the_balls[result_index].get_operation().get_result()
-    result_bar.set_result(target_result)
-
-    balls_collision.place_balls(the_balls, balls_area)
-    show_status = True
-    pygame.time.set_timer(USEREVENT + 2, 800)
-
-    while True:
-        pygame.display.update()
-        screen.fill(BACKGROUND)
-        paint_result_bar(result_bar, screen)
-        paint_time_bar(time_bar, screen)
-        if game_state == GameState.NORMAL:
-            for ball in the_balls:
-                paint_ball(ball, screen)
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                    exit()
-                elif event.type == USEREVENT + 1:
-                    time_bar.decrease()
-                    if time_bar.is_empty():
-                        game_state = GameState.LOST
-                elif event.type == MOUSEBUTTONUP:
-                    if event.button == LEFT_BUTTON:
-                        event_pos = event.pos
-                        clicked_ball = get_result_at_pos(event_pos, the_balls)
-                        if clicked_ball is not None:
-                            if clicked_ball["result"] == target_result:
-                                the_balls[clicked_ball["index"]].hide()
-                                if all_target_balls_destroyed(
-                                        target_result, the_balls):
-                                    game_state = GameState.WON
-                            else:
-                                game_state = GameState.LOST
-            clock.tick(FPS)
-            for ball in the_balls:
-                ball.move()
-            balls_collision.manage_colliding_balls(the_balls)
-        else:
-            paint_results(balls_area, the_balls, screen)
-            # Blinks the status text.
-            if show_status:
-                if game_state == GameState.WON:
-                    end_txt = "Success !"
-                else:
-                    end_txt = "Failure !"
-                end_txt_surface = end_font.render(end_txt,
-                                                  color=BLUE, background=RED)
-                screen.blit(end_txt_surface, END_TXT_POS)
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                    exit()
-                elif event.type == USEREVENT + 2:
-                    show_status = not show_status
-
-if __name__ == "__main__":
-    main()
+    play_game(30, operations_config)
