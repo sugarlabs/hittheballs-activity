@@ -78,6 +78,7 @@ def play_game(time_seconds, operations_config):
     else:
         size = screen.get_size()
 
+       
     clock = pygame.time.Clock()
     font = pygame.font.Font(None, 16)
     #font = PangoFont(family='Helvetica', size=16, bold=True)
@@ -154,12 +155,17 @@ def play_game(time_seconds, operations_config):
                     end_txt = "Success !"
                 else:
                     end_txt = "Failure !"
-                end_txt_surface = end_font.render(end_txt, 1,
+                end_txt_surface = end_font.render(end_txt,1,
                                                   BLUE, RED)
                 screen.blit(end_txt_surface, END_TXT_POS)
+
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
                     exit()
                 elif event.type == USEREVENT + 2:
                     show_status = not show_status
+
