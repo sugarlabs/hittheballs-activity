@@ -8,7 +8,6 @@ Created on Sun Sep 15 01:28:19 2013
 """
 
 import pygame
-from olpcgames.pangofont import PangoFont
 
 
 def paint_ball(ball, surface):
@@ -26,7 +25,7 @@ def paint_ball(ball, surface):
         txt_position = (int(ball_center[0] - txt_width / 2),
                         int(ball_center[1] - txt_height / 2))
         txt_surface = ball.get_txt_font().render(
-            ball.get_operation().get_text(), color=ball.get_txt_color())
+            ball.get_operation().get_text(), 1, ball.get_txt_color())
         surface.blit(txt_surface, txt_position)
 
 
@@ -65,8 +64,8 @@ def paint_result_bar(result_bar, surface):
         text = result_bar.get_header() + str(result_bar.get_result())
     except NameError:
         text = result_bar.get_header()
-    text_surface = result_bar.get_text_font(). \
-        render(text, color=result_bar.get_foreground())
+    text_surface = result_bar.get_text_font().render(
+        text, 1, result_bar.get_foreground())
     surface.blit(text_surface,
                  (edge[0] + result_bar.get_insets(),
                   edge[1] + result_bar.get_insets()))
@@ -79,7 +78,8 @@ def paint_results(game_area, balls_list, surface):
     balls_list : list of balls => list of Ball
     surface : the destination surface => PyGame.Surface
     """
-    font = PangoFont(family='Helvetica', size=16)
+    font = pygame.font.Font(None, 16)
+    #font = PangoFont(family='Helvetica', size=16)
     LINE_HEIGHT = font.size("0123456789")[1]
     CIRCLES_RADIUS = LINE_HEIGHT / 2
     ball_index = 0
@@ -92,7 +92,7 @@ def paint_results(game_area, balls_list, surface):
                            CIRCLES_RADIUS)
         txt = ball.get_operation().get_text() + " = " + str(ball.get_operation().
                                                             get_result())
-        txt_surface = font.render(txt, color=BLACK)
+        txt_surface = font.render(txt, 1, BLACK)
         surface.blit(txt_surface,
                      (game_area[0] + 40, game_area[1] + ball_index * LINE_HEIGHT))
         ball_index += 1

@@ -2,7 +2,5 @@
 name = HitTheBalls 
 bundle_id = com.loloof64.HitTheBalls
 activity_version = 1
-host_version = 1
-service_name = com.loloof64.HitTheBalls
 icon = activity
 exec = sugar-activity activity.Activity

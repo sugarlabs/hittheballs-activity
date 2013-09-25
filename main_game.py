@@ -5,12 +5,10 @@ Created on Tue Sep 24 13:54:20 2013
 
 @author: laurent-bernabe
 """
-
-import olpcgames
+from gi.repository import Gtk
 import pygame
 from random import randint
 from sys import exit
-from olpcgames.pangofont import PangoFont
 from pygame.locals import QUIT, USEREVENT, MOUSEBUTTONUP
 from elements_painter import paint_ball, paint_time_bar, paint_result_bar,\
     paint_results
@@ -72,16 +70,19 @@ def play_game(time_seconds, operations_config):
     DARK_GREEN = (0, 100, 0)
     GRAY = (200, 200, 200)
 
-    if olpcgames.ACTIVITY:
-        size = olpcgames.ACTIVITY.game_size
-        screen = pygame.display.set_mode(size)
-    else:
+    screen = pygame.display.get_surface()
+    if not(screen):
         size = (600, 400)
         screen = pygame.display.set_mode(size)
         pygame.display.set_caption("Hit the balls")
+    else:
+        size = screen.get_size()
+
     clock = pygame.time.Clock()
-    font = PangoFont(family='Helvetica', size=16, bold=True)
-    end_font = PangoFont(family='Helvetica', size=30, bold=True)
+    font = pygame.font.Font(None, 16)
+    #font = PangoFont(family='Helvetica', size=16, bold=True)
+    #end_font = PangoFont(family='Helvetica', size=30, bold=True)
+    end_font = font = pygame.font.Font(None, 30)
     END_TXT_POS = (int(size[0] / 4)), int(size[1] / 2.6)
 
     game_state = GameState.NORMAL
@@ -117,6 +118,10 @@ def play_game(time_seconds, operations_config):
         if game_state == GameState.NORMAL:
             for ball in the_balls:
                 paint_ball(ball, screen)
+
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
@@ -149,8 +154,8 @@ def play_game(time_seconds, operations_config):
                     end_txt = "Success !"
                 else:
                     end_txt = "Failure !"
-                end_txt_surface = end_font.render(end_txt,
-                                                  color=BLUE, background=RED)
+                end_txt_surface = end_font.render(end_txt, 1,
+                                                  BLUE, RED)
                 screen.blit(end_txt_surface, END_TXT_POS)
             for event in pygame.event.get():
                 if event.type == QUIT:

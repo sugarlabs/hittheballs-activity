@@ -10,10 +10,20 @@ from operation import OPER_ADD, OPER_SUB, OPER_MUL, OPER_DIV
 from balls_generator import OperationConfig
 from main_game import play_game
 
-if __name__ == "__main__":
-    operations_config = [OperationConfig(OPER_ADD, 2, 2),
-                         OperationConfig(OPER_MUL, 2, 1),
-                         OperationConfig(OPER_SUB, 2, 2),
-                         OperationConfig(OPER_DIV, 2, 2)]
 
-    play_game(30, operations_config)
+class Game():
+
+    def __init__(self):
+        pass
+
+    def run(self):
+        operations_config = [OperationConfig(OPER_ADD, 2, 2),
+                             OperationConfig(OPER_MUL, 2, 1),
+                             OperationConfig(OPER_SUB, 2, 2),
+                             OperationConfig(OPER_DIV, 2, 2)]
+
+        play_game(30, operations_config)
+
+if __name__ == "__main__":
+    g = Game()
+    g.run()
