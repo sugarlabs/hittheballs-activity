@@ -18,12 +18,15 @@ class OperationConfig(object):
     what is the limit for its operands ?
     """
 
-    def __init__(self, op_type, fst_op, snd_op):
+    def __init__(self, op_type, fst_op, snd_op, res_limit=-1):
         """
         Constructor:
-        op_type : operation type => either OPER_ADD, OPER_SUB, OPER_MUL or OPER_DIV
-        fst_op : limit, in digit numbers, for first operand => integer
-        snd_op : limit, in digit numbers, for second operand => integer
+        op_type : operation type => either OPER_ADD, OPER_SUB, OPER_MUL
+        or OPER_DIV
+        fst_op : limit for first operand => integer
+        snd_op : limit for second operand => integer
+        res_limit : limit on the result, unless we pass negative or zero value,
+        in which case there is no limit (useful for division) => integer
         """
         if op_type == OPER_SUB or op_type == OPER_DIV:
             # First operand can't have less digits than second operand in such
@@ -38,6 +41,7 @@ class OperationConfig(object):
         self._op_type = op_type
         self._fst_op = fst_op
         self._snd_op = snd_op
+        self._res_limit = res_limit
 
     def get_operation_type(self):
         """
@@ -48,17 +52,25 @@ class OperationConfig(object):
 
     def get_first_operand_limit(self):
         """
-        Accessor to the limit, in digits, of the first operand
+        Accessor to the limit of the first operand
         => integer
         """
         return self._fst_op
 
     def get_second_operand_limit(self):
         """
-        Accessor to the limit, in digits, of the second operand
+        Accessor to the limit of the second operand
         => integer
         """
         return self._snd_op
+
+    def get_result_limit(self):
+        """
+        Accessor to the result limit.
+        => negative or zero value if there is no restriction : integer
+        => positive value if there is a limit : integer
+        """
+        return self._res_limit
 
 
 class BallsGenerator(object):
@@ -102,8 +114,16 @@ class BallsGenerator(object):
                 op_type = operation_config.get_operation_type()
                 lim_1 = operation_config.get_first_operand_limit()
                 lim_2 = operation_config.get_second_operand_limit()
-                fst_operand = randint(2, 10 ** lim_1 - 1)
-                snd_operand = randint(2, 10 ** lim_2 - 1)
+                lim_res = operation_config.get_result_limit()
+                fst_operand = randint(2, lim_1)
+                snd_operand = randint(2, lim_2)
+                result = Operation(fst_operand, snd_operand, op_type).\
+                    get_result()
+                if lim_res > 0:
+                    if result > lim_res:
+                        continue
+                if result <= 1:
+                    continue
                 if op_type == OPER_ADD or op_type == OPER_MUL:
                     break
                 elif op_type == OPER_SUB:

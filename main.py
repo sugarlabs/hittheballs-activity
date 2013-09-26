@@ -17,12 +17,25 @@ class Game():
         pass
 
     def run(self):
-        operations_config = [OperationConfig(OPER_ADD, 2, 2),
-                             OperationConfig(OPER_MUL, 2, 1),
-                             OperationConfig(OPER_SUB, 2, 2),
-                             OperationConfig(OPER_DIV, 2, 2)]
+        levels = [
+            # level 1
+            [OperationConfig(OPER_ADD, 9, 9),
+             OperationConfig(OPER_MUL, 9, 9),
+             OperationConfig(OPER_SUB, 18, 9),
+             OperationConfig(OPER_DIV, 81, 9, 9)],
+            # level 2
+            [OperationConfig(OPER_ADD, 99, 99, 100),
+             OperationConfig(OPER_MUL, 99, 9),
+             OperationConfig(OPER_SUB, 100, 98),
+             OperationConfig(OPER_DIV, 891, 9, 99)],
+            # level 3
+            [OperationConfig(OPER_ADD, 999, 999, 1000),
+             OperationConfig(OPER_MUL, 99, 99, 1000),
+             OperationConfig(OPER_SUB, 1000, 998),
+             OperationConfig(OPER_DIV, 1000, 99, 99)]
+        ]
 
-        play_game(30, operations_config)
+        play_game(30, levels[2])
 
 if __name__ == "__main__":
     g = Game()

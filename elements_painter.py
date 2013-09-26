@@ -78,7 +78,7 @@ def paint_results(game_area, balls_list, surface):
     balls_list : list of balls => list of Ball
     surface : the destination surface => PyGame.Surface
     """
-    font = pygame.font.Font(None, 16)
+    font = pygame.font.Font(None, 40)
     #font = PangoFont(family='Helvetica', size=16)
     LINE_HEIGHT = font.size("0123456789")[1]
     CIRCLES_RADIUS = LINE_HEIGHT / 2
