@@ -11,7 +11,8 @@ from sugar3.activity.widgets import ActivityToolbarButton
 from sugar3.graphics.toolbutton import ToolButton
 from sugar3.activity.widgets import StopButton
 
-import main
+import main_game
+
 
 class Activity(activity.Activity):
 
@@ -20,11 +21,11 @@ class Activity(activity.Activity):
 
         self.max_participants = 1
         self.build_toolbar()
-        self._act = main.Game()
+        self._act = main_game.Game()
         self._pygamecanvas = sugargame.canvas.PygameCanvas(self)
         self.set_canvas(self._pygamecanvas)
         self._pygamecanvas.grab_focus()
-        self._pygamecanvas.run_pygame(self._act.run)
+        self._pygamecanvas.run_pygame(self._act.show_menu)
 
     def build_toolbar(self):
         toolbar_box = ToolbarBox()
@@ -48,6 +49,6 @@ class Activity(activity.Activity):
 
     def read_file(self, file_path):
         pass
-        
+
     def write_file(self, file_path):
         pass
