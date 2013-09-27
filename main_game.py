@@ -46,7 +46,7 @@ class Game:
         self._MENU_LEVELS_RECTS_Y_GAP = 30
         self._MENU_LEVELS_RECTS_WIDTH = 345
         self._MENU_LEVELS_RECTS_HEIGHT = 60
-        self._MENU_LEVELS_RECTS_TXT_OFFSET = (10, 10)
+        self._MENU_LEVELS_RECTS_TXT_OFFSET = (60, -2)
         self._MENU_LEVELS_RECTS_BG_COLOR = (255, 0, 0)
         self._MENU_LEVELS_RECTS_TXT_COLOR = (255, 255, 0)
         self._MENU_BACKGROUND = (255, 255, 255)
@@ -137,6 +137,17 @@ class Game:
                 return False
         return True
 
+    def _point_in_rect(self, point, rect):
+        """
+        Says whether a point is in a rect.
+        point : the point to test => tuple of 2 integers (x,y)
+        rect : the rect to test => tuple of 4 integers (x,y, width, height)
+        => Boolean
+        """
+        x_good = point[0] >= rect[0] and point[0] <= rect[0] + rect[2]
+        y_good = point[1] >= rect[1] and point[1] <= rect[1] + rect[3]
+        return x_good and y_good
+
     def _play_game(self, time_seconds, operations_config):
         """ The main game routine
             time_seconds : time limit in seconds => integer
@@ -218,7 +229,7 @@ class Game:
                         end_txt = "Success !"
                     else:
                         end_txt = "Failure !"
-                    end_txt_surface = self._end_font.render(end_txt, 1,
+                    end_txt_surface = self._end_font.render(end_txt, True,
                                                             self._BLUE,
                                                             self._RED)
                     self._screen.blit(end_txt_surface, self._END_TXT_POS)
@@ -248,6 +259,15 @@ class Game:
                 pygame.draw.rect(
                     self._screen, self._MENU_LEVELS_RECTS_BG_COLOR,
                     box_value)
+                txt = "Level " + str(box_index + 1)
+                txt_surface = self._menu_font.render(txt, True,
+                                                     self._MENU_LEVELS_RECTS_TXT_COLOR)
+                self._screen.blit(txt_surface,
+                                  (self._levels_rect[box_index][0] +
+                                   self._MENU_LEVELS_RECTS_TXT_OFFSET[0],
+                                   self._levels_rect[box_index][1] +
+                                   self._MENU_LEVELS_RECTS_TXT_OFFSET[1]
+                                   ))
             pygame.display.update()
             while Gtk.events_pending():
                 Gtk.main_iteration()
@@ -256,4 +276,15 @@ class Game:
                 if event.type == QUIT:
                     pygame.quit()
                     exit()
-            #self._play_game(30, self._levels[2])
+                if event.type == MOUSEBUTTONUP:
+                    if event.button == self._LEFT_BUTTON:
+                        selected_level_index = -1
+                        for level_index in range(len(self._levels)):
+                            if self._point_in_rect(event.pos,
+                                                   self._levels_rect[level_index]):
+                                selected_level_index = level_index
+                                break
+                        if selected_level_index >= 0:
+                            self._play_game(
+                                30,
+                                self._levels[selected_level_index])
