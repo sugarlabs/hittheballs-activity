@@ -5,6 +5,7 @@ Created on Tue Sep 24 13:54:20 2013
 
 @author: laurent-bernabe
 """
+from gettext import gettext as _
 from gi.repository import Gtk
 import pygame
 from random import randint
@@ -158,7 +159,7 @@ class Game:
         """
         # Shows loading screen
         self._screen.fill(self._MENU_BACKGROUND)
-        loading_txt = "Loading..."
+        loading_txt = _("Loading...")
         loading_txt_surface = self._end_font.render(
             loading_txt,
             True,
@@ -175,7 +176,7 @@ class Game:
 
         result_bar = ResultBar(self._game_font, txt_color=self._YELLOW,
                                bg_color=self._RED,
-                               header="Hit the ball(s) with result : ",
+                               header=_("Hit the ball (or the balls) with result : "),
                                width=self._size[0])
         RESULT_BAR_HEIGHT = result_bar.get_height()
 
@@ -244,9 +245,9 @@ class Game:
                 # Blinks the status text.
                 if show_status:
                     if game_state == GameState.WON:
-                        end_txt = "Success ! Click when you finished."
+                        end_txt = _("Success ! Click when you finished.")
                     else:
-                        end_txt = "Failure ! Click when you finished."
+                        end_txt = _("Failure ! Click when you finished.")
                     end_txt_surface = self._end_font.render(end_txt, True,
                                                             self._BLUE,
                                                             self._RED)
@@ -277,7 +278,7 @@ class Game:
                 pygame.draw.rect(
                     self._screen, self._MENU_LEVELS_RECTS_BG_COLOR,
                     box_value)
-                txt = "Level " + str(box_index + 1)
+                txt = _("Level ") + str(box_index + 1)
                 txt_surface = self._menu_font.render(txt, True,
                                                      self._MENU_LEVELS_RECTS_TXT_COLOR)
                 self._screen.blit(txt_surface,
