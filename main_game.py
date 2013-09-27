@@ -69,8 +69,8 @@ class Game:
 
         self._game_font = pygame.font.Font(None, 40)
         self._menu_font = pygame.font.Font(None, 90)
-        self._end_font = pygame.font.Font(None, 90)
-        self._END_TXT_POS = (int(self._size[0] / 4)), int(self._size[1] / 2.6)
+        self._end_font = pygame.font.Font(None, 40)
+        self._END_TXT_POS = (int(self._size[0] / 8)), int(self._size[1] / 2.6)
 
         self._clock = pygame.time.Clock()
         self._levels = [
@@ -90,11 +90,12 @@ class Game:
              OperationConfig(OPER_SUB, 1000, 998),
              OperationConfig(OPER_DIV, 1000, 99, 99)]
         ]
-        self._MENU_LEVELS_RECT_X = (self._size[0] - self._MENU_LEVELS_RECTS_WIDTH)\
-            / 2
+        self._MENU_LEVELS_RECT_X = (self._size[0] -
+                                    self._MENU_LEVELS_RECTS_WIDTH) / 2
         self._MENU_LEVEL_1_RECT_Y = (self._size[1] -
                                      (self._MENU_LEVELS_RECTS_HEIGHT +
-                                      self._MENU_LEVELS_RECTS_Y_GAP) * len(self._levels) +
+                                      self._MENU_LEVELS_RECTS_Y_GAP) *
+                                     len(self._levels) +
                                      self._MENU_LEVELS_RECTS_Y_GAP) / 2
 
         self._levels_rect = [(self._MENU_LEVELS_RECT_X,
@@ -151,9 +152,25 @@ class Game:
     def _play_game(self, time_seconds, operations_config):
         """ The main game routine
             time_seconds : time limit in seconds => integer
-            operations_config : configurations for the wanted operations => list of
+            operations_config : configurations for the wanted operations
+            => list of
             OperationConfig.
         """
+        # Shows loading screen
+        self._screen.fill(self._MENU_BACKGROUND)
+        loading_txt = "Loading..."
+        loading_txt_surface = self._end_font.render(
+            loading_txt,
+            True,
+            self._BLUE
+        )
+        txt_size = self._end_font.size(loading_txt)
+        self._screen.blit(loading_txt_surface, (
+            (self._size[0] - txt_size[0]) / 2,
+            (self._size[1] - txt_size[1]) / 2,
+        ))
+        pygame.display.update()
+
         game_state = GameState.NORMAL
 
         result_bar = ResultBar(self._game_font, txt_color=self._YELLOW,
@@ -181,7 +198,7 @@ class Game:
 
         balls_collision.place_balls(the_balls, balls_area)
         show_status = True
-        pygame.time.set_timer(USEREVENT + 2, 800)
+        pygame.time.set_timer(USEREVENT + 2, 1000)
 
         while True:
             pygame.display.update()
@@ -226,9 +243,9 @@ class Game:
                 # Blinks the status text.
                 if show_status:
                     if game_state == GameState.WON:
-                        end_txt = "Success !"
+                        end_txt = "Success ! Click when you finished."
                     else:
-                        end_txt = "Failure !"
+                        end_txt = "Failure ! Click when you finished."
                     end_txt_surface = self._end_font.render(end_txt, True,
                                                             self._BLUE,
                                                             self._RED)
