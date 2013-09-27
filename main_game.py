@@ -67,7 +67,7 @@ class Game:
         else:
             self._size = self._screen.get_size()
 
-        self._game_font = pygame.font.Font(None, 40)
+        self._game_font = pygame.font.Font(None, 34)
         self._menu_font = pygame.font.Font(None, 90)
         self._end_font = pygame.font.Font(None, 40)
         self._END_TXT_POS = (int(self._size[0] / 8)), int(self._size[1] / 2.6)
@@ -88,7 +88,7 @@ class Game:
             [OperationConfig(OPER_ADD, 999, 999, 1000),
              OperationConfig(OPER_MUL, 99, 99, 1000),
              OperationConfig(OPER_SUB, 1000, 998),
-             OperationConfig(OPER_DIV, 1000, 99, 99)]
+             OperationConfig(OPER_DIV, 1000, 99)]
         ]
         self._MENU_LEVELS_RECT_X = (self._size[0] -
                                     self._MENU_LEVELS_RECTS_WIDTH) / 2
@@ -197,6 +197,7 @@ class Game:
         result_bar.set_result(target_result)
 
         balls_collision.place_balls(the_balls, balls_area)
+
         show_status = True
         pygame.time.set_timer(USEREVENT + 2, 1000)
 
