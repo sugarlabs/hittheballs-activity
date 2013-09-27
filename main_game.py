@@ -31,6 +31,15 @@ class Game:
         """
         Constructor.
         """
+        self._initialized = False
+
+    def _lazy_init(self):
+        """
+        Lazy initialization : main code is only called once, thanks to
+        an internal flag.
+        """
+        if self._initialized:
+            return
         pygame.init()
         self._LEFT_BUTTON = 1
         self._FPS = 40
@@ -95,6 +104,7 @@ class Game:
                               self._MENU_LEVELS_RECTS_WIDTH,
                               self._MENU_LEVELS_RECTS_HEIGHT)
                              for y in range(len(self._levels))]
+        self._initialized = True
 
     def _get_result_at_pos(self, point, balls_list):
         """
@@ -230,6 +240,7 @@ class Game:
         """
         Manages the main menu.
         """
+        self._lazy_init()
         while True:
             self._screen.fill(self._MENU_BACKGROUND)
             for box_index in range(len(self._levels)):
