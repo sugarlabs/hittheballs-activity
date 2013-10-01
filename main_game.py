@@ -60,7 +60,7 @@ class Game:
             return
         pygame.init()
         self._LEFT_BUTTON = 1
-        self._FPS = 40
+        self._FPS = 10
         self._MENU_LEVELS_RECTS_Y_GAP = 30
         self._MENU_LEVELS_RECTS_WIDTH = 345
         self._MENU_LEVELS_RECTS_HEIGHT = 60
@@ -220,6 +220,8 @@ class Game:
         pygame.time.set_timer(USEREVENT + 2, 1000)
 
         while True:
+            while Gtk.events_pending():
+                Gtk.main_iteration()
             pygame.display.update()
             self._screen.fill(self._GAME_BACKGROUND)
             paint_result_bar(result_bar, self._screen)
@@ -227,9 +229,6 @@ class Game:
             if game_state == GameState.NORMAL:
                 for ball in the_balls:
                     paint_ball(ball, self._screen)
-
-                while Gtk.events_pending():
-                    Gtk.main_iteration()
 
                 for event in pygame.event.get():
                     if event.type == QUIT:
@@ -253,7 +252,6 @@ class Game:
                                         game_state = GameState.WON
                                 else:
                                     game_state = GameState.LOST
-                self._clock.tick(self._FPS)
                 for ball in the_balls:
                     ball.move()
                 balls_collision.manage_colliding_balls(the_balls)
@@ -270,9 +268,6 @@ class Game:
                                                             self._RED)
                     self._screen.blit(end_txt_surface, self._END_TXT_POS)
 
-                while Gtk.events_pending():
-                    Gtk.main_iteration()
-
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         pygame.quit()
@@ -282,6 +277,7 @@ class Game:
                     elif event.type == MOUSEBUTTONUP:
                         if event.button == self._LEFT_BUTTON:
                             return
+            self._clock.tick(self._FPS)
 
     def show_menu(self):
         """
@@ -324,3 +320,4 @@ class Game:
                             self._play_game(
                                 30,
                                 self._levels[selected_level_index])
+            self._clock.tick(self._FPS)
