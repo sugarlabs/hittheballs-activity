@@ -255,6 +255,7 @@ class Game:
                 for ball in the_balls:
                     ball.move()
                 balls_collision.manage_colliding_balls(the_balls)
+                self._clock.tick(self._FPS)
             else:
                 paint_results(balls_area, the_balls, self._screen)
                 # Blinks the status text.
@@ -277,7 +278,7 @@ class Game:
                     elif event.type == MOUSEBUTTONUP:
                         if event.button == self._LEFT_BUTTON:
                             return
-            self._clock.tick(self._FPS)
+                self._clock.tick(5)
 
     def show_menu(self):
         """
@@ -320,7 +321,8 @@ class Game:
                             self._play_game(
                                 30,
                                 self._levels[selected_level_index])
-            self._clock.tick(self._FPS)
+            self._clock.tick(5)
+
 def main():
     pygame.init()
     pygame.display.set_mode((0, 0), pygame.RESIZABLE)
