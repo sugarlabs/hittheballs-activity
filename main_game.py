@@ -174,19 +174,7 @@ class Game:
             => list of
             OperationConfig.
         """
-        # Shows loading screen
         self._screen.fill(self._MENU_BACKGROUND)
-        loading_txt = _("Loading...")
-        loading_txt_surface = self._end_font.render(
-            loading_txt,
-            True,
-            self._BLUE
-        )
-        txt_size = self._end_font.size(loading_txt)
-        self._screen.blit(loading_txt_surface, (
-            (self._size[0] - txt_size[0]) / 2,
-            (self._size[1] - txt_size[1]) / 2,
-        ))
         pygame.display.update()
 
         game_state = GameState.NORMAL
