@@ -321,3 +321,11 @@ class Game:
                                 30,
                                 self._levels[selected_level_index])
             self._clock.tick(self._FPS)
+def main():
+    pygame.init()
+    pygame.display.set_mode((0, 0), pygame.RESIZABLE)
+    game = Game() 
+    game.show_menu()
+
+if __name__ == '__main__':
+    main()
