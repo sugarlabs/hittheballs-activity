@@ -50,6 +50,7 @@ class Game:
         Constructor.
         """
         self._initialized = False
+        self.s = self.p = []
 
     def _lazy_init(self):
         """
@@ -60,7 +61,7 @@ class Game:
             return
         pygame.init()
         self._LEFT_BUTTON = 1
-        self._FPS = 40
+        self._FPS = 10
         self._MENU_LEVELS_RECTS_Y_GAP = 30
         self._MENU_LEVELS_RECTS_WIDTH = 345
         self._MENU_LEVELS_RECTS_HEIGHT = 60
@@ -167,6 +168,19 @@ class Game:
         y_good = point[1] >= rect[1] and point[1] <= rect[1] + rect[3]
         return x_good and y_good
 
+    def _update(self):
+        """
+        Update the screen rectangles that have been changed by drawing
+        actions since the last update (self.s), including rectangles
+        that were cleared the previous update (self.p), then clear the
+        current rectangles (self.s) in preparation for the next cycle.
+        """
+        pygame.display.update(self.s + self.p)
+        self.p = self.s
+        for r in self.s:
+            self._screen.fill(self._GAME_BACKGROUND, r)
+        self.s = []
+
     def _play_game(self, time_seconds, operations_config):
         """ The main game routine
             time_seconds : time limit in seconds => integer
@@ -174,20 +188,8 @@ class Game:
             => list of
             OperationConfig.
         """
-        # Shows loading screen
         self._screen.fill(self._MENU_BACKGROUND)
-        loading_txt = _("Loading...")
-        loading_txt_surface = self._end_font.render(
-            loading_txt,
-            True,
-            self._BLUE
-        )
-        txt_size = self._end_font.size(loading_txt)
-        self._screen.blit(loading_txt_surface, (
-            (self._size[0] - txt_size[0]) / 2,
-            (self._size[1] - txt_size[1]) / 2,
-        ))
-        pygame.display.update()
+        self._update()
 
         game_state = GameState.NORMAL
 
@@ -220,16 +222,14 @@ class Game:
         pygame.time.set_timer(USEREVENT + 2, 1000)
 
         while True:
-            pygame.display.update()
-            self._screen.fill(self._GAME_BACKGROUND)
-            paint_result_bar(result_bar, self._screen)
-            paint_time_bar(time_bar, self._screen)
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+            self._update()
+            self.s += paint_result_bar(result_bar, self._screen)
+            self.s += paint_time_bar(time_bar, self._screen)
             if game_state == GameState.NORMAL:
                 for ball in the_balls:
-                    paint_ball(ball, self._screen)
-
-                while Gtk.events_pending():
-                    Gtk.main_iteration()
+                    self.s += paint_ball(ball, self._screen)
 
                 for event in pygame.event.get():
                     if event.type == QUIT:
@@ -253,12 +253,12 @@ class Game:
                                         game_state = GameState.WON
                                 else:
                                     game_state = GameState.LOST
-                self._clock.tick(self._FPS)
                 for ball in the_balls:
                     ball.move()
                 balls_collision.manage_colliding_balls(the_balls)
+                self._clock.tick(self._FPS)
             else:
-                paint_results(balls_area, the_balls, self._screen)
+                self.s += paint_results(balls_area, the_balls, self._screen)
                 # Blinks the status text.
                 if show_status:
                     if game_state == GameState.WON:
@@ -268,10 +268,7 @@ class Game:
                     end_txt_surface = self._end_font.render(end_txt, True,
                                                             self._BLUE,
                                                             self._RED)
-                    self._screen.blit(end_txt_surface, self._END_TXT_POS)
-
-                while Gtk.events_pending():
-                    Gtk.main_iteration()
+                    self.s.append(self._screen.blit(end_txt_surface, self._END_TXT_POS))
 
                 for event in pygame.event.get():
                     if event.type == QUIT:
@@ -282,31 +279,36 @@ class Game:
                     elif event.type == MOUSEBUTTONUP:
                         if event.button == self._LEFT_BUTTON:
                             return
+                self._clock.tick(5)
 
     def show_menu(self):
         """
         Manages the main menu.
         """
         self._lazy_init()
+        self.s = []
+        self.s.append(self._screen.fill(self._MENU_BACKGROUND))
+        self._update()
         while True:
-            self._screen.fill(self._MENU_BACKGROUND)
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+            self._update()
             for box_index in range(len(self._levels)):
                 box_value = self._levels_rect[box_index]
-                pygame.draw.rect(
+                s = pygame.draw.rect(
                     self._screen, self._MENU_LEVELS_RECTS_BG_COLOR,
                     box_value)
+                self.s.append(s)
                 txt = _("Level ") + str(box_index + 1)
                 txt_surface = self._menu_font.render(txt, True,
                                                      self._MENU_LEVELS_RECTS_TXT_COLOR)
-                self._screen.blit(txt_surface,
+                s = self._screen.blit(txt_surface,
                                   (self._levels_rect[box_index][0] +
                                    self._MENU_LEVELS_RECTS_TXT_OFFSET[0],
                                    self._levels_rect[box_index][1] +
                                    self._MENU_LEVELS_RECTS_TXT_OFFSET[1]
                                    ))
-            pygame.display.update()
-            while Gtk.events_pending():
-                Gtk.main_iteration()
+                self.s.append(s)
 
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -324,3 +326,13 @@ class Game:
                             self._play_game(
                                 30,
                                 self._levels[selected_level_index])
+            self._clock.tick(5)
+
+def main():
+    pygame.init()
+    pygame.display.set_mode((0, 0), pygame.RESIZABLE)
+    game = Game() 
+    game.show_menu()
+
+if __name__ == '__main__':
+    main()
