@@ -66,7 +66,7 @@
      style="display:none"
      sodipodi:insensitive="true">
     <rect
-       style="fill:none;stroke:&stroke_color;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:none;stroke:&stroke_color;;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="rect2988"
        width="45"
        height="45"
@@ -81,7 +81,7 @@
      sodipodi:insensitive="true">
     <path
        sodipodi:type="arc"
-       style="fill:&fill_color;stroke:&stroke_color;stroke-width:0.06873218;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:&fill_color;;stroke:&stroke_color;;stroke-width:0.06873218;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="path3758"
        sodipodi:cx="31.607143"
        sodipodi:cy="30.892857"
@@ -96,7 +96,7 @@
      inkscape:label="text">
     <text
        xml:space="preserve"
-       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:&stroke_color;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:&stroke_color;;fill-opacity:1;stroke:none;font-family:Sans"
        x="22.857143"
        y="40.714287"
        id="text3855"
