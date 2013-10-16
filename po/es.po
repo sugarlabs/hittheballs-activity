@@ -1,0 +1,43 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-09-27 12:58+0000\n"
+"PO-Revision-Date: 2013-10-16 03:48+0200\n"
+"Last-Translator: AlanJAS <alanjas@hotmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.5\n"
+
+#: activity/activity.info:2
+#, fuzzy
+msgid "HitTheBalls"
+msgstr "HitTheBalls"
+
+#: main_game.py:162
+msgid "Loading..."
+msgstr "Cargando..."
+
+#: main_game.py:179
+msgid "Hit the ball (or the balls) with result : "
+msgstr "Golpea la/las pelotas con el resultado: "
+
+#: main_game.py:248
+msgid "Success ! Click when you finished."
+msgstr "¡Éxito! Haz clic cuando hayas terminado."
+
+#: main_game.py:250
+msgid "Failure ! Click when you finished."
+msgstr "¡Fallaste! Haz clic cuando hayas terminado."
+
+#: main_game.py:281
+msgid "Level "
+msgstr "Nivel "
