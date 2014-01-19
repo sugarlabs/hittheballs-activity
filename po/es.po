@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-27 12:58+0000\n"
-"PO-Revision-Date: 2013-10-16 03:48+0200\n"
+"POT-Creation-Date: 2013-10-02 00:32-0400\n"
+"PO-Revision-Date: 2014-01-20 00:49+0200\n"
 "Last-Translator: AlanJAS <alanjas@hotmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: es\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.5\n"
 
-#: activity/activity.info:2
-#, fuzzy
+#. TRANS: "name" option from activity.info file
+#. TRANS: "summary" option from activity.info file
+#. TRANS: "description" option from activity.info file
 msgid "HitTheBalls"
-msgstr "HitTheBalls"
+msgstr "Golpea las pelotas"
 
-#: main_game.py:162
-msgid "Loading..."
-msgstr "Cargando..."
-
-#: main_game.py:179
+#: main_game.py:198
 msgid "Hit the ball (or the balls) with result : "
 msgstr "Golpea la/las pelotas con el resultado: "
 
-#: main_game.py:248
+#: main_game.py:265
 msgid "Success ! Click when you finished."
 msgstr "¡Éxito! Haz clic cuando hayas terminado."
 
-#: main_game.py:250
+#: main_game.py:267
 msgid "Failure ! Click when you finished."
 msgstr "¡Fallaste! Haz clic cuando hayas terminado."
 
-#: main_game.py:281
+#: main_game.py:302
 msgid "Level "
 msgstr "Nivel "
+
+#~ msgid "Loading..."
+#~ msgstr "Cargando..."
