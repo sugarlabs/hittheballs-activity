@@ -18,6 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import pygame
+import gi
+gi.require_version('Gtk', '3.0')
 
 import sugargame
 import sugargame.canvas
@@ -39,11 +42,10 @@ class Activity(activity.Activity):
 
         self.max_participants = 1
         self.build_toolbar()
-        self._act = main_game.Game()
-        self._pygamecanvas = sugargame.canvas.PygameCanvas(self)
-        self.set_canvas(self._pygamecanvas)
-        self._pygamecanvas.grab_focus()
-        self._pygamecanvas.run_pygame(self._act.show_menu)
+        self._game = main_game.Game()
+        self._game.canvas = sugargame.canvas.PygameCanvas(self, main=self._game.show_menu, modules=[pygame.display, pygame.font])
+        self.set_canvas(self._game.canvas)
+        self._game.canvas.grab_focus()
 
     def build_toolbar(self):
         toolbar_box = ToolbarBox()
