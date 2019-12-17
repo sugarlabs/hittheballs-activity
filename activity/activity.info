@@ -3,4 +3,4 @@ name = HitTheBalls
 bundle_id = com.loloof64.HitTheBalls
 activity_version = 1
 icon = activity
-exec = sugar-activity activity.Activity
+exec = sugar-activity3 activity.Activity
