@@ -52,7 +52,7 @@ def manage_colliding_balls(balls_list):
     """
     for fst_ball_index in range(len(balls_list[:-1])):
         fst_ball = balls_list[fst_ball_index]
-        inner_range = range(fst_ball_index + 1, len(balls_list))
+        inner_range = list(range(fst_ball_index + 1, len(balls_list)))
         for snd_ball_index in inner_range:
             snd_ball = balls_list[snd_ball_index]
             if (are_colliding_balls(fst_ball, snd_ball)):
