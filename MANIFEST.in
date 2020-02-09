@@ -1,2 +1,0 @@
-include *.py *.txt *.png *.jpg NEWS README
-recursive-include activity *.svg *.info
