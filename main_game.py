@@ -175,7 +175,7 @@ class Game:
         that were cleared the previous update (self.p), then clear the
         current rectangles (self.s) in preparation for the next cycle.
         """
-        pygame.display.update(self.s + self.p)
+        pygame.display.update()
         self.p = self.s
         for r in self.s:
             self._screen.fill(self._GAME_BACKGROUND, r)
