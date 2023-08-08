@@ -78,6 +78,8 @@ class Game:
         self._DARK_GREEN = (0, 100, 0)
         self._GRAY = (200, 200, 200)
 
+        self.score = 0
+
         self._screen = pygame.display.get_surface()
         if not(self._screen):
             self._size = (600, 400)
@@ -89,7 +91,6 @@ class Game:
         self._game_font = pygame.font.Font(None, 34)
         self._menu_font = pygame.font.Font(None, 90)
         self._end_font = pygame.font.Font(None, 40)
-        self._END_TXT_POS = (int(self._size[0] / 8)), int(self._size[1] / 2.6)
 
         self._clock = pygame.time.Clock()
         self._levels = [
@@ -191,6 +192,7 @@ class Game:
         self._screen.fill(self._MENU_BACKGROUND)
         self._update()
 
+        self.score = 0
         game_state = GameState.NORMAL
 
         result_bar = ResultBar(self._game_font, txt_color=self._YELLOW,
@@ -219,7 +221,6 @@ class Game:
         balls_collision.place_balls(the_balls, balls_area)
 
         show_status = True
-        pygame.time.set_timer(USEREVENT + 2, 1000)
 
         while True:
             while Gtk.events_pending():
@@ -238,7 +239,7 @@ class Game:
                     elif event.type == USEREVENT + 1:
                         time_bar.decrease()
                         if time_bar.is_empty():
-                            game_state = GameState.LOST
+                            game_state = GameState.OVER
                     elif event.type == MOUSEBUTTONUP:
                         if event.button == self._LEFT_BUTTON:
                             event_pos = event.pos
@@ -250,7 +251,13 @@ class Game:
                                     if self.\
                                         _all_target_balls_destroyed(
                                             target_result, the_balls):
-                                        game_state = GameState.WON
+                                        self.score += 1
+                                        the_balls = BallsGenerator().generate_list(5, operations_config,
+                                                                                   balls_area, self._game_font,
+                                                                                   self._BLACK)
+                                        balls_collision.place_balls(the_balls, balls_area)
+                                        target_result = the_balls[result_index].get_operation().get_result()
+                                        result_bar.set_result(target_result)
                                 else:
                                     game_state = GameState.LOST
                 for ball in the_balls:
@@ -261,21 +268,27 @@ class Game:
                 self.s += paint_results(balls_area, the_balls, self._screen)
                 # Blinks the status text.
                 if show_status:
-                    if game_state == GameState.WON:
-                        end_txt = _("Success ! Click when you finished.")
+                    if game_state == GameState.OVER:
+                        end_txt = _("Gave over! You ran out of time")
                     else:
-                        end_txt = _("Failure ! Click when you finished.")
+                        end_txt = _("Game over! You chose incorrectly")
                     end_txt_surface = self._end_font.render(end_txt, True,
-                                                            self._BLUE,
-                                                            self._RED)
-                    self.s.append(self._screen.blit(end_txt_surface, self._END_TXT_POS))
+                                                            self._BLACK)
+                    score_txt_surface = self._end_font.render(f"Your score was {self.score}", True,
+                                                              self._BLACK)
+                    restart_txt_surface = self._end_font.render("click anywhere to restart", True,
+                                                                self._BLACK)
+                    txt_pos = [int(self._size[0] / 8), int(self._size[1] / 2.6)]
+                    self.s.append(self._screen.blit(end_txt_surface, txt_pos))
+                    txt_pos[1] += end_txt_surface.get_rect().height + 5
+                    self.s.append(self._screen.blit(score_txt_surface, txt_pos))
+                    txt_pos[1] += end_txt_surface.get_rect().height + 15
+                    self.s.append(self._screen.blit(restart_txt_surface, txt_pos))
 
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         pygame.quit()
                         exit()
-                    elif event.type == USEREVENT + 2:
-                        show_status = not show_status
                     elif event.type == MOUSEBUTTONUP:
                         if event.button == self._LEFT_BUTTON:
                             return

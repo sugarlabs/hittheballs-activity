@@ -30,5 +30,5 @@ class GameState(object):
     """
 
     NORMAL = 0
-    WON = 1
+    OVER = 1
     LOST = 2
