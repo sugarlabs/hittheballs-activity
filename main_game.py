@@ -22,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Manages the main game.
 """
 
+import os
+
 from gettext import gettext as _
 from gi.repository import Gtk
 import pygame
@@ -38,6 +40,7 @@ import balls_collision
 from operation import OPER_ADD, OPER_SUB, OPER_MUL, OPER_DIV
 from balls_generator import OperationConfig
 
+from sugar3.activity.activity import get_activity_root
 
 class Game:
 
@@ -268,6 +271,7 @@ class Game:
                 self.s += paint_results(balls_area, the_balls, self._screen)
                 # Blinks the status text.
                 if show_status:
+                    self.save_highscore()
                     if game_state == GameState.OVER:
                         end_txt = _("Gave over! You ran out of time")
                     else:
@@ -276,13 +280,17 @@ class Game:
                                                             self._BLACK)
                     score_txt_surface = self._end_font.render(f"Your score was {self.score}", True,
                                                               self._BLACK)
+                    highscore_txt_surface = self._end_font.render(f"and Highscore is {self.load_highscore()}", True,
+                                                                   self._BLACK)
                     restart_txt_surface = self._end_font.render("click anywhere to restart", True,
                                                                 self._BLACK)
                     txt_pos = [int(self._size[0] / 8), int(self._size[1] / 2.6)]
                     self.s.append(self._screen.blit(end_txt_surface, txt_pos))
                     txt_pos[1] += end_txt_surface.get_rect().height + 5
                     self.s.append(self._screen.blit(score_txt_surface, txt_pos))
-                    txt_pos[1] += end_txt_surface.get_rect().height + 15
+                    txt_pos[1] += end_txt_surface.get_rect().height + 5
+                    self.s.append(self._screen.blit(highscore_txt_surface, txt_pos))
+                    txt_pos[1] += end_txt_surface.get_rect().height + 25
                     self.s.append(self._screen.blit(restart_txt_surface, txt_pos))
 
                 for event in pygame.event.get():
@@ -340,6 +348,30 @@ class Game:
                                 30,
                                 self._levels[selected_level_index])
             self._clock.tick(5)
+
+    def read_highscore(self):
+        highscore = [0]
+        file_path = os.path.join(get_activity_root(), 'data', 'highscore')
+        if os.path.exists(file_path):
+            with open(file_path, "r") as fp:
+                highscore = fp.readlines()
+        return int(highscore[0])
+
+    def save_highscore(self):
+        file_path = os.path.join(get_activity_root(), 'data', 'highscore')
+        int_highscore = self.read_highscore()
+        if not int_highscore > self.score:
+            with open(file_path, "w") as fp:
+                fp.write(str(self.score))
+
+    def load_highscore(self):
+        highscore = self.read_highscore()
+        try:
+            return highscore
+        except (ValueError, IndexError) as e:
+            logging.exception(e)
+            return 0
+        return 0
 
 def main():
     pygame.init()
