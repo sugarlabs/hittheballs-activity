@@ -1,7 +1,7 @@
 [Activity]
 name = HitTheBalls 
 bundle_id = com.loloof64.HitTheBalls
-activity_version = 1
+activity_version = 2
 icon = activity
 exec = sugar-activity3 activity.Activity
 license = GPLv3+
