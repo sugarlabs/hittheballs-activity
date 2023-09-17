@@ -1,0 +1,9 @@
+2
+
+* Added Highscore feature in the game (Riya Jain)
+* Added Gameloop (Riya Jain)
+* Description box goes away and the pygame display surface is updated. (Jui Pradhan)
+* add license and repository metadata (Ayush Nawal)
+* remove manifest (Ayush Nawal)
+* Fix TypeError (Ayush Nawal)
+* Port to Python3 and update sugargame (Srevin Saju)
