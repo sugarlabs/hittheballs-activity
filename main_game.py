@@ -80,8 +80,13 @@ class Game:
         self._RED = (255, 0, 0)
         self._DARK_GREEN = (0, 100, 0)
         self._GRAY = (200, 200, 200)
-
         self.score = 0
+        self.click_sound = pygame.mixer.Sound("assets/clicksound.ogg")
+        self.click_sound.set_volume(0.3)
+        self.correct_ans = pygame.mixer.Sound("assets/correctans.ogg")
+        self.wrong_ans = pygame.mixer.Sound("assets/wrongans.ogg")
+        pygame.mixer.music.load("assets/theme.ogg")
+        pygame.mixer.music.play(-1)
 
         self._screen = pygame.display.get_surface()
         if not(self._screen):
@@ -245,11 +250,13 @@ class Game:
                             game_state = GameState.OVER
                     elif event.type == MOUSEBUTTONUP:
                         if event.button == self._LEFT_BUTTON:
+                            self.click_sound.play()
                             event_pos = event.pos
                             clicked_ball = self.\
                                 _get_result_at_pos(event_pos, the_balls)
                             if clicked_ball is not None:
                                 if clicked_ball["result"] == target_result:
+                                    self.correct_ans.play()
                                     the_balls[clicked_ball["index"]].hide()
                                     if self.\
                                         _all_target_balls_destroyed(
@@ -262,6 +269,7 @@ class Game:
                                         target_result = the_balls[result_index].get_operation().get_result()
                                         result_bar.set_result(target_result)
                                 else:
+                                    self.wrong_ans.play()
                                     game_state = GameState.LOST
                 for ball in the_balls:
                     ball.move()
@@ -337,6 +345,7 @@ class Game:
                     exit()
                 if event.type == MOUSEBUTTONUP:
                     if event.button == self._LEFT_BUTTON:
+                        self.click_sound.play()
                         selected_level_index = -1
                         for level_index in range(len(self._levels)):
                             if self._point_in_rect(event.pos,
