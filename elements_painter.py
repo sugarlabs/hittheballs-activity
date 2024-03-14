@@ -37,14 +37,23 @@ def paint_ball(ball, surface):
         r = pygame.draw.circle(surface, ball.get_bg_color(), ball.get_center(),
                                int(ball.get_diameter() / 2))
         s.append(r)
+
         ball_center = ball.get_center()
-        txt_width, txt_height = ball.get_txt_font().size(ball.get_operation().
-                                                         get_text())
-        txt_position = (int(ball_center[0] - txt_width / 2),
-                        int(ball_center[1] - txt_height / 2))
-        txt_surface = ball.get_txt_font().render(
-            ball.get_operation().get_text(), 1, ball.get_txt_color())
-        r = surface.blit(txt_surface, txt_position)
+        text = str(ball.get_operation().get_result())
+        font = ball.get_txt_font()
+
+        bg_color = ball.get_bg_color()
+        brightness = (0.299 * bg_color[0] + 0.587 * bg_color[1] + 0.114 * bg_color[2]) / 255
+
+        if brightness > 0.5:  
+            text_color = (0, 0, 0) 
+        else:  
+            text_color = (255, 255, 255) 
+
+        text_surface = font.render(text, True, text_color)
+
+        surface.blit(text_surface, (ball_center[0] - text_surface.get_width() / 2, ball_center[1] - text_surface.get_height() / 2))
+        
         s.append(r)
     return s
 
