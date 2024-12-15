@@ -173,3 +173,10 @@ class Ball(object):
         Makes the ball hidden.
         """
         self._visible = False
+
+    def get_display_text(self):
+        """
+        Returns the text to display on the ball.
+        This will be the mathematical expression (e.g., "3 + 2").
+        """
+        return self._operation.get_text()
