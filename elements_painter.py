@@ -39,7 +39,7 @@ def paint_ball(ball, surface):
         s.append(r)
 
         ball_center = ball.get_center()
-        text = str(ball.get_operation().get_result())
+        text = ball.get_display_text()
         font = ball.get_txt_font()
 
         bg_color = ball.get_bg_color()
